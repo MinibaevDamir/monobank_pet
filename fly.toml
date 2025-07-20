@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for monobank-pet on 2025-07-19T18:30:46Z
+# fly.toml app configuration file generated for monobank-pet on 2025-07-20T14:47:13+03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -8,8 +8,24 @@ primary_region = 'waw'
 
 [build]
 
+[env]
+  PORT = '3000'
+  SCOPES = 'read_orders,write_orders'
+  SHOPIFY_API_KEY = '74bc9e0d29ec8007decd1eb3b583ae97'
+  SHOPIFY_APP_URL = 'https://monobank-pet.fly.dev'
+
+[processes]
+  app = 'node ./dbsetup.js npm run docker-start'
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '10GB'
+
 [http_service]
-  internal_port = 8080
+  internal_port = 3000
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
@@ -17,7 +33,6 @@ primary_region = 'waw'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
+  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 512
